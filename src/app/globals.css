@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+:root {
+    --background: #fbfbf9;
+    --foreground: #282F57;
+    --color-mint: #cfeae1;
+}
+html {
+  scroll-behavior: smooth;
+}
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-mint:var(--color-mint);
+}
+
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-montserrat);
+}
+.montserrat {
+  font-family:  var(--font-montserrat)
+}
+.judson {
+  font-family:  var(--font-judson)
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  display: none;
+}
+input[type="date"]::-moz-calendar-picker-indicator {
+  opacity: 0;
+  display: none;
+}
+
+input[type="date"]::-ms-input-placeholder {
+  opacity: 0;
+  display: none;
+}
