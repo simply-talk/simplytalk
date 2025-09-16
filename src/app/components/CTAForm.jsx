@@ -160,7 +160,7 @@ export function CtaForm() {
       const res = await fetch("/api/create-razorpay-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: 300 }),
+        body: JSON.stringify({ amount: 1 }),
       });
 
       console.log("📡 Response status:", res.status);
