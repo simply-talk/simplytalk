@@ -197,7 +197,7 @@ export default function Form({
                   disabled={isDisabled}
                   className={isDisabled ? "text-gray-400 bg-gray-100" : ""}
                 >
-                  {label} {type === "paid" ? "(Paid)" : "(Free)"}{" "}
+                  {label} {type === "paid" ? "(Premium)" : "(Trial)"}{" "}
                   {bookedSlots.includes(label) ? "(Booked)" : ""}
                   {hasBookedBefore && type === "free" ? " (Not allowed)" : ""}
                 </option>
@@ -221,7 +221,7 @@ export default function Form({
               ? "Processing..."
               : isSelectedSlotPaid
               ? "Pay & Book"
-              : "Book for Free"}
+              : "Book a trial"}
           </button>
         </div>
       </div>

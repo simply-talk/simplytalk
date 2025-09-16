@@ -12,17 +12,20 @@ function getTodayDateString() {
   const dd = String(today.getDate()).padStart(2, "0");
   return `${yyyy}-${mm}-${dd}`;
 }
-
+const price_amount = {
+  paid : 2,
+  free : 1,
+}
 function generateTimeSlots() {
   return [
-    { id: 1, label: "11:05 AM - 11:30 AM", type: "paid" },
-    { id: 2, label: "11:45 AM - 11:50 AM", type: "free" },
-    { id: 3, label: "12:30 PM - 12:55 PM", type: "paid" },
-    { id: 4, label: "1:10 PM - 1:15 PM", type: "free" },
-    { id: 5, label: "2:00 PM - 2:25 PM", type: "paid" },
-    { id: 6, label: "2:40 PM - 2:45 PM", type: "free" },
-    { id: 7, label: "3:30 PM - 3:55 PM", type: "paid" },
-    { id: 8, label: "4:25 PM - 4:30 PM", type: "free" },
+    { id: 1, label: "11:05 AM - 11:25 AM", type: "paid", price: price_amount.paid, duration: "20 mins" },
+    { id: 2, label: "11:45 AM - 11:50 AM", type: "starter", price: price_amount.free, duration: "5 mins" },
+    { id: 3, label: "12:30 PM - 12:50 PM", type: "paid", price: price_amount.paid, duration: "20 mins" },
+    { id: 4, label: "1:10 PM - 1:15 PM", type: "starter", price: price_amount.free, duration: "5 mins" },
+    { id: 5, label: "2:00 PM - 2:20 PM", type: "paid", price: price_amount.paid, duration: "20 mins" },
+    { id: 6, label: "2:40 PM - 2:45 PM", type: "starter", price: price_amount.free, duration: "5 mins" },
+    { id: 7, label: "3:30 PM - 3:50 PM", type: "paid", price: price_amount.paid, duration: "20 mins" },
+    { id: 8, label: "4:25 PM - 4:30 PM", type: "starter", price: price_amount.free, duration: "5 mins" },
   ];
 }
 
@@ -142,8 +145,9 @@ export function CtaForm() {
     }
   };
 
-  const handlePayment = async () => {
+  const handlePayment = async (amount) => {
     console.log("=== PAYMENT PROCESS STARTED ===");
+    console.log("Payment Amount:", amount);
 
     const loaded = await loadRazorpayScript();
     if (!loaded) {
@@ -160,7 +164,7 @@ export function CtaForm() {
       const res = await fetch("/api/create-razorpay-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: 1 }),
+        body: JSON.stringify({ amount }), // Pass the actual amount
       });
 
       console.log("📡 Response status:", res.status);
@@ -184,13 +188,15 @@ export function CtaForm() {
     console.log("💰 Order Amount:", orderData.amount);
     console.log("🆔 Order ID:", orderData.id);
 
+    const selectedSlot = timeSlots.find((slot) => slot.label === timeSlot);
+    const slotType = selectedSlot?.type || "unknown";
 
     const options = {
       key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
       amount: orderData.amount,
       currency: orderData.currency,
       name: "SimplyTalk",
-      description: "Session Booking",
+      description: `Session Booking - ${slotType === 'starter' ? 'Starter (5 mins)' : 'Premium (20 mins)'}`,
       order_id: orderData.id,
       method: {
         upi: true,
@@ -219,6 +225,7 @@ export function CtaForm() {
               topic,
               shortDescription,
               age,
+              slotType, // Add slot type for backend tracking
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
@@ -236,12 +243,17 @@ export function CtaForm() {
             setSubmitted(false);
           } else {
             setSubmitted(true);
-            toast.success('Paid Slot Confirmed!');
+            const message = slotType === 'starter' ? 'Starter Slot (5 mins) Confirmed!' : 'Premium Slot (20 mins) Confirmed!';
+            toast.success(message);
             setName("");
             setPhone("");
             setLanguage("");
             setDate("");
             setTimeSlot("");
+            setTopic("");
+            setShortDescription("");
+            setAge("");
+            setUserStatus(null);
             fetchBookedSlots(date).then((slots) => setBookedSlots(slots));
           }
         } catch (err) {
@@ -290,9 +302,9 @@ export function CtaForm() {
       return;
     }
 
-    // Prevent returning users from booking free slots
-    if (selectedSlot.type === "free" && userStatus === "existing") {
-      toast.error("You have already booked a session before. Free slots are not available for you.");
+    // Prevent returning users from booking starter slots
+    if (selectedSlot.type === "starter" && userStatus === "existing") {
+      toast.error("You have already booked a session before. Starter slots (₹49) are only available for first-time users. Please select a Premium slot (₹2).");
       return;
     }
 
@@ -305,34 +317,25 @@ export function CtaForm() {
     setLoadingSubmit(true);
 
     const selectedSlot = timeSlots.find((slot) => slot.label === timeSlot);
-    if (selectedSlot?.type === "paid") {
-      await handlePayment();
-    } else {
-      try {
-        const res = await fetch("/api/book", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, phone, language, date, timeSlot, topic, shortDescription, age }),
-        });
+    
+    // Both slot types now require payment
+    if (selectedSlot) {
+      await handlePayment(selectedSlot.price);
+    }
+  };
 
-        const data = await res.json();
-        if (!res.ok) {
-          toast.error(data.message || "Booking failed");
-        } else {
-          setSubmitted(true);
-          toast.success('Free Slot Confirmed');
-          setName("");
-          setPhone("");
-          setLanguage("");
-          setDate("");
-          setTimeSlot("");
-          fetchBookedSlots(date).then((slots) => setBookedSlots(slots));
-        }
-      } catch (err) {
-        toast.error("Something went wrong. Please try again.");
-      } finally {
-        setLoadingSubmit(false);
-      }
+  // Helper function to display slot label with price
+  const getSlotDisplayLabel = (slot) => {
+    const isBooked = bookedSlots.includes(slot.label);
+    const isDisabledForExisting = slot.type === "starter" && userStatus === "existing";
+    
+    if (isBooked) {
+      return `${slot.label} - Booked`;
+    } else if (isDisabledForExisting) {
+      return `${slot.label} - ₹${slot.price} (${slot.duration}) - First-time users only`;
+    } else {
+      const slotName = slot.type === "starter" ? "Starter" : "Premium";
+      return `${slot.label} - ₹${slot.price} (${slotName} - ${slot.duration})`;
     }
   };
 
@@ -374,6 +377,7 @@ export function CtaForm() {
               loadingSlots={loadingSlots}
               loadingSubmit={loadingSubmit}
               handleSubmit={handlePayAndBookClick}
+              getSlotDisplayLabel={getSlotDisplayLabel}
             />
           </div>
         </div>
