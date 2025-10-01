@@ -28,7 +28,7 @@ const faqs = [
 
 export function FaqSection() {
   return (
-    <section className=" py-16">
+    <section className="py-16" id="faq">
       <div className="container mx-auto px-4">
         <AnimatedHeading as="h2" className="judson md:mb-12 mb-12 text-center text-3xl md:text-4xl font-bold text-[var(--foreground)]">  
           Frequently Asked Questions

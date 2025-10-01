@@ -21,7 +21,7 @@ export function HowItWorks() {
   ];
 
   return (
-    <section className="md:py-4 py-4 bg-[var(--color-mint)]">
+    <section className="md:py-4 py-4 bg-[var(--color-mint)]" id="how-it-works">
       <div className="container mx-auto">
         {/* Heading */}
         <AnimatedHeading as="h2" className="judson md:my-12 my-5 text-center text-3xl md:text-4xl font-bold text-[var(--foreground)]">

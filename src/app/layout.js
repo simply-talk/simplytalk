@@ -2,6 +2,9 @@ import { Judson, Montserrat } from "next/font/google";
 import "./globals.css";
 import Seo from "./components/SEO";
 import { Toaster } from "sonner";
+import Header  from "./components/Header";
+import Footer from "./components/Footer";
+
 
 const judson = Judson({
   variable: "--font-judson",
@@ -160,11 +163,10 @@ export default function RootLayout({ children }) {
         url = 'https://simplytalk.in'
         image = '/simplytalk.png'
       />
-
-    
-
-        {children}
+        <Header />
+        <main className="flex-grow">{children}</main>
         <Toaster position="top-right" richColors />
+        <Footer />
       </body>
     </html>
   );

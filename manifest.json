@@ -1,0 +1,8 @@
+{
+  "name": "SimplyTalk",
+  "short_name": "App",
+  "serviceworker": {
+    "src": "/sw.js",
+    "scope": "/"
+  }
+}

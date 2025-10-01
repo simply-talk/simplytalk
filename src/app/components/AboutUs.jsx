@@ -3,7 +3,7 @@ import { AnimatedHeading, FadeInUp } from "./animations";
 
 export const AboutUs = () => (
   <section className="md:py-12 py-6">
-    <div className="max-w-6xl mx-auto flex flex-col gap-4 md:gap-10 items-center justify-center px-6 space-y-12">
+    <div id="about" className="max-w-6xl mx-auto flex flex-col gap-4 md:gap-10 items-center justify-center px-6 space-y-12">
       <AnimatedHeading as="h2" className="judson md:mb-12 mb-4 text-center text-3xl md:text-4xl font-bold text-[var(--foreground)]">
         Who We Are?
       </AnimatedHeading>

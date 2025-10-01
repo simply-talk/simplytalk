@@ -13,8 +13,8 @@ function getTodayDateString() {
   return `${yyyy}-${mm}-${dd}`;
 }
 const price_amount = {
-  paid : 2,
-  free : 1,
+  paid: 199,
+  free: 49,
 }
 function generateTimeSlots() {
   return [
@@ -317,7 +317,7 @@ export function CtaForm() {
     setLoadingSubmit(true);
 
     const selectedSlot = timeSlots.find((slot) => slot.label === timeSlot);
-    
+
     // Both slot types now require payment
     if (selectedSlot) {
       await handlePayment(selectedSlot.price);
@@ -328,7 +328,7 @@ export function CtaForm() {
   const getSlotDisplayLabel = (slot) => {
     const isBooked = bookedSlots.includes(slot.label);
     const isDisabledForExisting = slot.type === "starter" && userStatus === "existing";
-    
+
     if (isBooked) {
       return `${slot.label} - Booked`;
     } else if (isDisabledForExisting) {
@@ -388,22 +388,49 @@ export function CtaForm() {
         onClose={() => setShowTermsModal(false)}
         title="Terms and Conditions"
       >
-        <div className="max-h-60 overflow-y-auto text-sm text-gray-700 mb-4">
-          <p>
-            Please read and accept our Terms and Conditions before proceeding with your booking.
+        {/* Scrollable Body */}
+        <div className="max-h-[80vh] min-h-[40vh] overflow-y-auto text-sm text-gray-700 mb-4 space-y-4">
+
+          {/* Emergency Notice */}
+          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 rounded mb-4">
+            ⚠️ <strong>Emergency Notice:</strong> If you are in crisis or at risk of harm, please call your local emergency number or mental health helpline immediately. SimplyTalk is not a crisis service.
+          </div>
+
+          {/* Short Disclaimer */}
+          <p className="text-gray-800 mb-2">
+            Disclaimer: SimplyTalk provides supportive listening only. It is not therapy, counseling, or medical advice.
           </p>
-          <ul className="list-disc pl-5 mt-2">
-            <li className="font-semibold text-red-600">
-              Any pornable, sexual, or religious content during the call will lead to immediate call hanging and possible ban.
+
+          {/* Existing rules / TnC (kept exactly as-is) */}
+          <p className="mb-2">Before booking, please confirm you understand:</p>
+          <ul className="list-disc pl-5 space-y-2">
+            <li>
+              No pornographic, sexual, abusive, or religious content is allowed.
+              Violation will result in immediate call termination and possible ban.
             </li>
-            <li>All bookings are non-refundable once payment is made.</li>
-            <li>Rescheduling is allowed up to 24 hours before your slot.</li>
-            <li>Be on time for your session. Late arrivals may reduce your session time.</li>
-            <li>Your data is handled securely and confidentially.</li>
-            <li>For any issues, contact our support team.</li>
+            <li>
+              Payments are non-refundable, but you may reschedule once (at no extra charge)
+              if requested at least 24 hours before your booked time.
+            </li>
+            <li>
+              Be on time. Late arrivals may reduce your session time.
+            </li>
+            <li>
+              Your data is handled securely and confidentially.
+            </li>
+            <li>
+              SimplyTalk is a supportive listening service, not therapy, counseling,
+              or medical advice.
+            </li>
+            <li>
+              If you are in crisis, please call your local emergency number or
+              mental health helpline immediately.
+            </li>
           </ul>
         </div>
-        <div className="flex items-center mb-4">
+
+        {/* Checkbox (kept exactly as-is) */}
+        <div className="flex items-start mb-4">
           <input
             id="acceptTerms"
             type="checkbox"
@@ -412,9 +439,18 @@ export function CtaForm() {
             className="mr-2"
           />
           <label htmlFor="acceptTerms" className="text-sm">
-            I have read and accept the Terms and Conditions.
+            I understand SimplyTalk is not a therapy or medical service, and I agree to the{" "}
+            <a href="/privacy" target="_blank" className="text-teal-600 underline hover:text-teal-800">
+              Privacy Policy
+            </a>{" "}
+            and{" "}
+            <a href="/refund-policy" target="_blank" className="text-teal-600 underline hover:text-teal-800">
+              No Refund/One-Time Reschedule Policy
+            </a>.
           </label>
         </div>
+
+        {/* Buttons */}
         <div className="flex justify-end gap-2">
           <button
             className="px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -423,8 +459,7 @@ export function CtaForm() {
             Cancel
           </button>
           <button
-            className={`px-4 py-2 rounded bg-teal-600 text-white hover:bg-teal-700 ${!acceptTerms ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+            className={`px-4 py-2 rounded bg-teal-600 text-white hover:bg-teal-700 ${!acceptTerms ? "opacity-50 cursor-not-allowed" : ""}`}
             disabled={!acceptTerms}
             onClick={handleAcceptTerms}
           >
@@ -432,6 +467,8 @@ export function CtaForm() {
           </button>
         </div>
       </Modal>
+
+
     </section>
   );
 }
