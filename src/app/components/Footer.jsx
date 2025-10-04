@@ -17,6 +17,23 @@ export default function Footer() {
           <p className="text-gray-600 mt-2 text-sm">
             Your Calm Conversation Call Line
           </p>
+
+          {/* Social Media */}
+          <div className="mt-4 flex space-x-3">
+            <Link
+              href="https://www.instagram.com/simplytalk.in?igsh=OG9oMDBnbHEwcWg1"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image
+                src="/instagram.svg"
+                width={25}
+                height={25}
+                alt="Instagram"
+                className="hover:opacity-80 transition"
+              />
+            </Link>
+          </div>
         </div>
 
         {/* Quick Links */}

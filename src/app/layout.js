@@ -30,9 +30,9 @@ export default function RootLayout({ children }) {
 
         <meta name="title" content="Talk to a Non-Judgmental Listener | SimplyTalk" />
         <meta name="description" content="Need someone to talk to? Book a confidential emotional support call with an online listener today. Multilingual and affordable support." />
-        <meta name="keywords" content="talk to someone online, emotional help, online listener, support call, speak your mind, need to talk, someone to talk to, affordable therapy alternative, Indian mental health support, emotional wellness India" />
+        <meta name="keywords" content="simplytalk, talk to someone online, emotional help, online listener, support call, speak your mind, need to talk, someone to talk to, affordable therapy alternative, Indian mental health support, emotional wellness India" />
 
-        <meta name="keywords" content="listener chat service, emotional venting call, talk therapy alternative, talk to someone for anxiety, safe space to speak, empathetic conversation online, non-clinical emotional support, anonymous listener online, virtual talking service, support for stress and overwhelm" />
+        <meta name="keywords" content="simplytalk, listener chat service, emotional venting call, talk therapy alternative, talk to someone for anxiety, safe space to speak, empathetic conversation online, non-clinical emotional support, anonymous listener online, virtual talking service, support for stress and overwhelm" />
 
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#ffffff" />

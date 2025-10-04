@@ -16,6 +16,7 @@ const price_amount = {
   paid: 199,
   free: 49,
 }
+
 function generateTimeSlots() {
   return [
     { id: 1, label: "11:05 AM - 11:25 AM", type: "paid", price: price_amount.paid, duration: "20 mins" },
