@@ -42,7 +42,7 @@ export function PricingSection() {
               <AnimatedButton
                 as="a"
                 href="#book"
-                className="montserrat inline-block border border-[--foreground] bg-transparent text-gray-700 px-7 py-3 text-sm rounded-full font-medium transition"
+                className="montserrat inline-block bg-[#3DC9A2] text-[#E1F0ED] px-9 py-3 text-sm rounded-full font-medium"
               >
                 Book Trial
               </AnimatedButton>
