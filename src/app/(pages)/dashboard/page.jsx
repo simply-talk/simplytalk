@@ -4,6 +4,13 @@ import Image from "next/image";
 import { FiLogOut } from "react-icons/fi";
 import BookingTable from "./components/BookingTable";
 import { useRouter } from "next/navigation";
+
+
+export const metadata = {
+  title: "Dashboard | SimplyTalk",
+};
+
+
 export default function DashboardPage() {
 
   const router = useRouter();

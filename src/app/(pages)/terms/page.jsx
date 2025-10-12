@@ -1,5 +1,9 @@
 import Link from "next/link";
 
+export const metadata = {
+  title: "Terms & Conditions | SimplyTalk",
+};
+
 export default function TermsConditions() {
   return (
     <section className="max-w-4xl mx-auto px-6 py-12 text-gray-800">

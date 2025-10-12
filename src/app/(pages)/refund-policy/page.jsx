@@ -1,5 +1,7 @@
 import Link from "next/link";
-
+export const metadata = {
+  title: "Refund Policy | SimplyTalk",
+};
 export default function RefundPolicy() {
   return (
     <section className="max-w-4xl mx-auto px-6 py-12 text-gray-800">
