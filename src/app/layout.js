@@ -4,7 +4,7 @@ import Seo from "./components/SEO";
 import { Toaster } from "sonner";
 import Header  from "./components/Header";
 import Footer from "./components/Footer";
-
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 const judson = Judson({
   variable: "--font-judson",
@@ -168,6 +168,7 @@ export default function RootLayout({ children }) {
         <Toaster position="top-right" richColors />
         <Footer />
       </body>
+         <GoogleAnalytics gaId="G-MG11RVK4E3" />
     </html>
   );
 }
