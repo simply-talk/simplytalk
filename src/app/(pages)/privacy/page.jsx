@@ -1,8 +1,6 @@
 import Link from "next/link";
 
-export const metadata = {
-  title: "Privacy Policy | SimplyTalk",
-};
+
 export default function PrivacyPolicy() {
   return (
     <section className="max-w-4xl mx-auto px-6 py-12 text-gray-800">

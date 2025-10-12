@@ -1,8 +1,5 @@
 import Link from "next/link";
 
-export const metadata = {
-  title: "Terms & Conditions | SimplyTalk",
-};
 
 export default function TermsConditions() {
   return (

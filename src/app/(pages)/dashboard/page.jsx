@@ -6,10 +6,6 @@ import BookingTable from "./components/BookingTable";
 import { useRouter } from "next/navigation";
 
 
-export const metadata = {
-  title: "Dashboard | SimplyTalk",
-};
-
 
 export default function DashboardPage() {
 

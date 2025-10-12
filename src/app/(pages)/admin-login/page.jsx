@@ -5,9 +5,6 @@ import { useRouter } from "next/navigation"
 import { HiEye } from "react-icons/hi"
 import { HiEyeSlash } from "react-icons/hi2";
 
-export const metadata = {
-  title: "Login Admin| SimplyTalk",
-};
 
 
 export default function AdminLoginPage() {
