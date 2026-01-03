@@ -6,8 +6,6 @@ export async function POST(request) {
     console.log("🔄 Payment verification started");
 
     const data = await request.json();
-    console.log("📦 Received data:", data);
-
     const {
       name,
       phone,
@@ -23,73 +21,48 @@ export async function POST(request) {
       amount,
     } = data;
 
-    // Basic input validation
     if (
       !name || !phone || !date || !timeSlot ||
       !razorpay_order_id || !razorpay_payment_id || !razorpay_signature
     ) {
-      console.error("❌ Missing required fields");
-      return new Response(JSON.stringify({ error: "Missing required fields" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
+      return new Response(JSON.stringify({ error: "Missing required fields" }), { status: 400 });
     }
 
-    // Environment variable check
     const keySecret = process.env.RAZORPAY_KEY_SECRET;
     if (!keySecret) {
-      console.error("❌ RAZORPAY_KEY_SECRET is not defined");
-      return new Response(JSON.stringify({ error: "Server misconfiguration" }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
+      return new Response(JSON.stringify({ error: "Server misconfiguration" }), { status: 500 });
     }
 
-    // 1. Verify signature
+    // ✅ Step 1: Verify signature
     const generated_signature = crypto
       .createHmac("sha256", keySecret)
-      .update(razorpay_order_id + "|" + razorpay_payment_id)
+      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
       .digest("hex");
 
     if (generated_signature !== razorpay_signature) {
-      console.error("❌ Signature mismatch", {
-        expected: generated_signature,
-        received: razorpay_signature,
-      });
-      return new Response(JSON.stringify({ error: "Invalid payment signature" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
+      return new Response(JSON.stringify({ error: "Invalid payment signature" }), { status: 400 });
     }
 
     console.log("✅ Signature verified");
 
-    // 2. Check if slot already booked
-    const { data: existing, error: fetchError } = await supabase
+    // ✅ Step 2: Prevent double booking of same slot
+    const { data: existing } = await supabase
       .from("bookings")
       .select("id")
       .eq("date", date)
       .eq("time_slot", timeSlot)
       .maybeSingle();
 
-    if (fetchError) {
-      console.error("❌ Error checking slot:", fetchError.message);
-      return new Response(JSON.stringify({ error: fetchError.message }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
     if (existing) {
-      console.warn("⚠️ Slot already booked");
-      return new Response(JSON.stringify({ error: "Slot already booked" }), {
-        status: 409,
-        headers: { "Content-Type": "application/json" },
-      });
+      return new Response(JSON.stringify({ error: "Slot already booked" }), { status: 409 });
     }
 
-    // 3. Save booking
-    const { data: booking, error: insertError } = await supabase
+    // ✅ Step 3: Determine plan details
+    const planType = amount === 199 ? "15-min" : amount === 299 ? "30-min" : "custom";
+    const duration = amount === 199 ? "15 mins" : amount === 299 ? "30 mins" : "";
+
+    // ✅ Step 4: Insert booking
+    const { data: booking, error: bookingError } = await supabase
       .from("bookings")
       .insert([
         {
@@ -101,20 +74,20 @@ export async function POST(request) {
           topic,
           short_description: shortDescription,
           age,
+          plan_type: planType,
+          duration,
+          amount,
         },
       ])
       .select()
       .maybeSingle();
 
-    if (insertError) {
-      console.error("❌ Error saving booking:", insertError.message);
-      return new Response(JSON.stringify({ error: insertError.message }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
+    if (bookingError) {
+      console.error("❌ Error saving booking:", bookingError.message);
+      return new Response(JSON.stringify({ error: bookingError.message }), { status: 500 });
     }
 
-    // 4. Save payment info
+    // ✅ Step 5: Insert payment
     const { error: paymentError } = await supabase.from("payments").insert([
       {
         booking_id: booking.id,
@@ -129,23 +102,13 @@ export async function POST(request) {
 
     if (paymentError) {
       console.error("❌ Error saving payment:", paymentError.message);
-      return new Response(JSON.stringify({ error: paymentError.message }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
+      return new Response(JSON.stringify({ error: paymentError.message }), { status: 500 });
     }
 
     console.log("✅ Booking & payment saved");
-    return new Response(JSON.stringify({ success: true }), {
-      status: 201,
-      headers: { "Content-Type": "application/json" },
-    });
-
+    return new Response(JSON.stringify({ success: true }), { status: 201 });
   } catch (err) {
-    console.error("🔥 Uncaught error in /verify-payment:", err);
-    return new Response(JSON.stringify({ error: "Internal server error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    console.error("🔥 verify-payment error:", err);
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
   }
 }

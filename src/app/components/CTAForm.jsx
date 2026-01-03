@@ -13,20 +13,20 @@ function getTodayDateString() {
   return `${yyyy}-${mm}-${dd}`;
 }
 const price_amount = {
-  paid: 199,
-  free: 49,
-}
+  normal: 199,
+  premium: 299,
+};
 
 function generateTimeSlots() {
   return [
-    { id: 1, label: "11:05 AM - 11:25 AM", type: "paid", price: price_amount.paid, duration: "20 mins" },
-    { id: 2, label: "11:45 AM - 11:50 AM", type: "starter", price: price_amount.free, duration: "5 mins" },
-    { id: 3, label: "12:30 PM - 12:50 PM", type: "paid", price: price_amount.paid, duration: "20 mins" },
-    { id: 4, label: "1:10 PM - 1:15 PM", type: "starter", price: price_amount.free, duration: "5 mins" },
-    { id: 5, label: "2:00 PM - 2:20 PM", type: "paid", price: price_amount.paid, duration: "20 mins" },
-    { id: 6, label: "2:40 PM - 2:45 PM", type: "starter", price: price_amount.free, duration: "5 mins" },
-    { id: 7, label: "3:30 PM - 3:50 PM", type: "paid", price: price_amount.paid, duration: "20 mins" },
-    { id: 8, label: "4:25 PM - 4:30 PM", type: "starter", price: price_amount.free, duration: "5 mins" },
+    { id: 1, label: "11:00 AM - 11:15 AM", type: "normal", price: price_amount.normal, duration: "15 mins" },
+    { id: 2, label: "11:30 AM - 12:00 PM", type: "premium", price: price_amount.premium, duration: "30 mins" },
+    { id: 3, label: "12:15 PM - 12:30 PM", type: "normal", price: price_amount.normal, duration: "15 mins" },
+    { id: 4, label: "12:45 PM - 1:15 PM", type: "premium", price: price_amount.premium, duration: "30 mins" },
+    { id: 5, label: "1:30 PM - 1:45 PM", type: "normal", price: price_amount.normal, duration: "15 mins" },
+    { id: 6, label: "2:00 PM - 2:30 PM", type: "premium", price: price_amount.premium, duration: "30 mins" },
+    { id: 7, label: "2:45 PM - 3:00 PM", type: "normal", price: price_amount.normal, duration: "15 mins" },
+    { id: 8, label: "3:15 PM - 3:45 PM", type: "premium", price: price_amount.premium, duration: "30 mins" },
   ];
 }
 

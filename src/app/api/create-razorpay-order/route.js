@@ -4,67 +4,58 @@ export async function POST(request) {
   try {
     const { amount } = await request.json();
 
-    // Validation
-    if (!amount || amount <= 0) {
-      console.error("Invalid amount:", amount);
-      return new Response(JSON.stringify({ error: "Valid amount required" }), {
-        status: 400,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+    // ✅ Step 1: Basic validation
+    if (!amount || typeof amount !== "number" || amount <= 0) {
+      console.error("❌ Invalid amount:", amount);
+      return new Response(JSON.stringify({ error: "Valid numeric amount required" }), { status: 400 });
     }
 
-    // Check environment variables
-    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
-      console.error("Missing Razorpay credentials");
-      return new Response(JSON.stringify({ error: "Server misconfiguration" }), {
-        status: 500,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+    // ✅ Step 2: Check environment variables
+    const keyId = process.env.RAZORPAY_KEY_ID;
+    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+    if (!keyId || !keySecret) {
+      console.error("❌ Missing Razorpay credentials");
+      return new Response(JSON.stringify({ error: "Server misconfiguration" }), { status: 500 });
     }
 
-    const razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID,
-      key_secret: process.env.RAZORPAY_KEY_SECRET,
-    });
+    // ✅ Step 3: Initialize Razorpay client
+    const razorpay = new Razorpay({ key_id: keyId, key_secret: keySecret });
 
-    // Create order
+    // ✅ Step 4: Create order
     const order = await razorpay.orders.create({
-      amount: Math.round(amount * 100), // Ensure integer
+      amount: Math.round(amount * 100), // convert to paise
       currency: "INR",
       receipt: `receipt_${Date.now()}`,
       payment_capture: 1,
-    });
-
-    console.log("Order created:", order.id);
-
-    return new Response(JSON.stringify(order), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
+      notes: {
+        platform: "SimplyTalk",
+        plan_amount: `${amount}`,
+        description: amount === 199 ? "15-min session" : amount === 299 ? "30-min session" : "Custom amount",
       },
     });
+
+    console.log("✅ Razorpay order created:", order.id, "| ₹", amount);
+
+    // ✅ Step 5: Return order details
+    return new Response(JSON.stringify(order), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+
   } catch (err) {
-    console.error("Error creating order:", err);
+    console.error("💥 Error creating Razorpay order:", err);
     return new Response(
-      JSON.stringify({ 
-        error: err.message,
-        details: err.error?.description || "Failed to create order"
-      }), 
-      {
-        status: 500,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      JSON.stringify({
+        error: "Failed to create order",
+        details: err.message,
+      }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
 }
 
-export async function OPTIONS(request) {
+// ✅ CORS preflight support
+export async function OPTIONS() {
   return new Response(null, {
     status: 204,
     headers: {

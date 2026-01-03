@@ -3,17 +3,26 @@ import { supabase } from "../_supabase";
 export async function POST(request) {
   try {
     const data = await request.json();
-    console.log(data)
-    const { name, phone, language, date, timeSlot, age, shortDescription, topic } = data;
+    const {
+      name,
+      phone,
+      language,
+      date,
+      timeSlot,
+      age,
+      shortDescription,
+      topic,
+      plan_type,
+      duration,
+      amount,
+    } = data;
 
-    if (!name || !phone || !language || !date || !timeSlot || !age || !topic) {
-      return new Response(JSON.stringify({ error: "Missing fields" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
+    // ✅ Step 1: Validate required fields
+    if (!name || !phone || !language || !date || !timeSlot || !age || !topic || !amount) {
+      return new Response(JSON.stringify({ error: "Missing required fields" }), { status: 400 });
     }
 
-    // Check if slot is already booked
+    // ✅ Step 2: Check if slot is already booked
     const { data: existing, error: fetchError } = await supabase
       .from("bookings")
       .select("id")
@@ -22,39 +31,42 @@ export async function POST(request) {
       .maybeSingle();
 
     if (fetchError) {
-      return new Response(JSON.stringify({ error: fetchError.message }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
+      console.error("❌ Supabase fetch error:", fetchError.message);
+      return new Response(JSON.stringify({ error: "Database fetch error" }), { status: 500 });
     }
 
     if (existing) {
-      return new Response(JSON.stringify({ error: "Slot already booked" }), {
-        status: 409,
-        headers: { "Content-Type": "application/json" },
-      });
+      return new Response(JSON.stringify({ error: "Slot already booked" }), { status: 409 });
     }
 
-    // Insert booking
+    // ✅ Step 3: Insert booking
     const { error: insertError } = await supabase.from("bookings").insert([
-      { name, phone, language, date, time_slot: timeSlot, topic, short_description:shortDescription, age },
+      {
+        name,
+        phone,
+        language,
+        date,
+        time_slot: timeSlot,
+        topic,
+        short_description: shortDescription,
+        age,
+        plan_type,
+        duration,
+        amount,
+      },
     ]);
 
     if (insertError) {
-      return new Response(JSON.stringify({ error: insertError.message }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
+      console.error("❌ Error inserting booking:", insertError.message);
+      return new Response(JSON.stringify({ error: "Failed to save booking" }), { status: 500 });
     }
 
-    return new Response(JSON.stringify({ success: true }), {
-      status: 201,
-      headers: { "Content-Type": "application/json" },
-    });
+    console.log("✅ Booking saved for", name, "on", date, "at", timeSlot);
+
+    // ✅ Step 4: Respond success
+    return new Response(JSON.stringify({ success: true }), { status: 201 });
   } catch (err) {
-    return new Response(JSON.stringify({ error: "Invalid request" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    });
+    console.error("💥 Error in /book:", err);
+    return new Response(JSON.stringify({ error: "Invalid request" }), { status: 400 });
   }
 }
