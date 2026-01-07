@@ -32,7 +32,7 @@ export default function Hero() {
             href="#book"
             className="montserrat inline-block bg-[var(--foreground)] text-white md:px-9 md:py-3 px-6 py-3 text-xs md:text-sm rounded-full font-normal"
           >
-            Book ₹199 Session →
+            Book ₹249 Session →
           </AnimatedButton>
         </FadeInUp>
 
