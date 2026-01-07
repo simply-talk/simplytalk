@@ -30,8 +30,9 @@ export async function POST(request) {
       notes: {
         platform: "SimplyTalk",
         plan_amount: `${amount}`,
-        description: amount === 199 ? "15-min session" : amount === 299 ? "30-min session" : "Custom amount",
+        description: amount === 249 ? "15-min session" : amount === 499 ? "30-min session" : "Custom amount",
       },
+
     });
 
     console.log("✅ Razorpay order created:", order.id, "| ₹", amount);

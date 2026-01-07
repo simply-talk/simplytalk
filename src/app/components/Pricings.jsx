@@ -28,7 +28,7 @@ export function PricingSection() {
                 />
               </div>
 
-              <div className="mb-2 text-4xl font-bold text-[#1a1a1a]">₹199</div>
+              <div className="mb-2 text-4xl font-bold text-[#1a1a1a]">₹249</div>
               <div className="mb-4 text-slate-600 text-base font-medium">
                 15-minute session
               </div>
@@ -64,7 +64,7 @@ export function PricingSection() {
                 />
               </div>
 
-              <div className="mb-2 text-4xl font-bold text-[#1a1a1a]">₹299</div>
+              <div className="mb-2 text-4xl font-bold text-[#1a1a1a]">₹499</div>
               <div className="mb-4 text-slate-600 text-base font-medium">
                 30-minute session
               </div>

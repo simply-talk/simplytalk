@@ -282,15 +282,16 @@ export default function BookingTable() {
                         <thead className="sticky top-0 z-20 bg-gray-50">
                             <tr className="border-b border-gray-200">
                                 <th className="px-6 py-4 sticky left-0 bg-gray-50 z-30 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Age</th>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booking Date</th>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Call Date</th>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time Slot</th>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Slot Type</th>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Topic</th>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Age</th>
+    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booking Date</th>
+    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Call Date</th>
+    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time Slot</th>
+    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plan</th>
+    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount (₹)</th>
+    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Topic</th>
+    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
@@ -319,6 +320,12 @@ export default function BookingTable() {
                                             <td className="px-6 py-4 text-sm text-gray-500">{formatDate(b.created_at)}</td>
                                             <td className="px-6 py-4 text-sm text-gray-500">{formatDate(b.date)}</td>
                                             <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">{b.time_slot}</td>
+                                            <td className="px-6 py-4 text-sm text-gray-900">
+                                                {b.plan_type || (getDurationInMinutes(b.time_slot) > 15 ? "30-min" : "15-min")}
+                                            </td>
+                                            <td className="px-6 py-4 text-sm text-gray-900">
+                                                {b.amount ? `₹${b.amount}` : b.plan_type === "30-min" ? "₹499" : "₹249"}
+                                            </td>
                                             <td className="px-6 py-4">
                                                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${isFree ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}`}>{slot}</span>
                                             </td>

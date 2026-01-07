@@ -6,7 +6,6 @@ import BookingTable from "./components/BookingTable";
 import { useRouter } from "next/navigation";
 
 
-
 export default function DashboardPage() {
 
   const router = useRouter();
@@ -32,7 +31,6 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      {/* Filters + Table */}
       <BookingTable />
     </div>
   );

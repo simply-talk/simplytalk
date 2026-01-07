@@ -6,7 +6,6 @@ export default function Form({
   setName,
   phone,
   handlePhoneChange,
-  handleCheckUser,
   language,
   setLanguage,
   topic,
@@ -25,8 +24,7 @@ export default function Form({
   loadingSlots,
   loadingSubmit,
   handleSubmit,
-  checkingUser,
-  userStatus,
+  getSlotDisplayLabel,
 }) {
   const Dropdown = ({ children, ...props }) => (
     <div className="relative">
@@ -61,21 +59,14 @@ export default function Form({
     return `${yyyy}-${mm}-${dd}`;
   };
 
-  // Determine if selected slot is paid or free
-  const selectedSlotObj = timeSlots.find((slot) => slot.label === timeSlot);
-  const isSelectedSlotPaid = selectedSlotObj?.type === "paid";
-
-  // Show message if user has already booked
-  const hasBookedBefore = userStatus === "existing";
-
   return (
     <form onSubmit={handleSubmit}>
       <div className="grid gap-5 md:gap-4 md:grid-cols-2 max-w-xl">
         {/* Name */}
         <input
           type="text"
-          placeholder="Enter name"
-          className="rounded-md border px-3 py-2 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-none"
+          placeholder="Enter your name"
+          className="rounded-md border px-3 py-2 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-teal-400"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
@@ -84,18 +75,14 @@ export default function Form({
         <input
           type="tel"
           placeholder="Enter contact number"
-          className="rounded-md border px-3 py-2 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-none min-w-full"
+          className="rounded-md border px-3 py-2 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-teal-400"
           value={phone}
           onChange={handlePhoneChange}
-          onBlur={handleCheckUser}
           maxLength={10}
           pattern="\d{10}"
           inputMode="numeric"
           aria-invalid={phone.length > 0 && phone.length !== 10 ? "true" : "false"}
-          aria-describedby="phone-error"
         />
-
-
 
         {/* Language Selector */}
         <Dropdown value={language} onChange={(e) => setLanguage(e.target.value)}>
@@ -123,7 +110,7 @@ export default function Form({
         <input
           type="number"
           placeholder="Enter your age"
-          className="rounded-md border px-3 py-2 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-none appearance-none"
+          className="rounded-md border px-3 py-2 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-teal-400 appearance-none"
           value={age}
           onChange={(e) => setAge(e.target.value)}
           min="12"
@@ -133,7 +120,7 @@ export default function Form({
         {/* Short Description */}
         <textarea
           placeholder="Describe your concern briefly (optional)"
-          className="rounded-md border px-3 py-2 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-none md:col-span-2"
+          className="rounded-md border px-3 py-2 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-teal-400 md:col-span-2"
           rows={3}
           maxLength={150}
           value={shortDescription}
@@ -144,7 +131,7 @@ export default function Form({
         <div className="relative w-full">
           <input
             type="date"
-            className="w-full rounded-md border px-3 py-2 text-sm md:text-base bg-transparent appearance-none focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-none pr-10"
+            className="w-full rounded-md border px-3 py-2 text-sm md:text-base bg-transparent appearance-none focus:outline-none focus:ring-1 focus:ring-teal-400"
             value={date}
             min={getTodayDateString()}
             onChange={(e) => {
@@ -157,12 +144,6 @@ export default function Form({
             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer"
             onClick={() => window._dateInput?.showPicker?.()}
             tabIndex={0}
-            aria-label="Open calendar"
-            onKeyDown={(e) => {
-              if (["Enter", " "].includes(e.key)) {
-                window._dateInput?.showPicker?.();
-              }
-            }}
           >
             <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
               <rect x="3" y="5" width="18" height="16" rx="2" stroke="#282F57" strokeWidth="2" />
@@ -185,43 +166,32 @@ export default function Form({
             <option value="" disabled>
               {loadingSlots ? "Loading slots..." : "Select time slot"}
             </option>
-            {timeSlots.map(({ id, label, type }) => {
-              const isDisabled =
-                bookedSlots.includes(label) ||
-                (hasBookedBefore && type === "free");
-
+            {timeSlots.map((slot) => {
+              const isBooked = bookedSlots.includes(slot.label);
               return (
                 <option
-                  key={id}
-                  value={label}
-                  disabled={isDisabled}
-                  className={isDisabled ? "text-gray-400 bg-gray-100" : ""}
+                  key={slot.id}
+                  value={slot.label}
+                  disabled={isBooked}
+                  className={isBooked ? "text-gray-400 bg-gray-100" : ""}
                 >
-                  {label} {type === "paid" ? "(Premium)" : "(Trial)"}{" "}
-                  {bookedSlots.includes(label) ? "(Booked)" : ""}
-                  {hasBookedBefore && type === "free" ? " (Not allowed)" : ""}
+                  {getSlotDisplayLabel(slot)}
                 </option>
               );
             })}
           </Dropdown>
         )}
 
-        
-
         {/* Submit Button */}
         <div className="md:col-span-2 flex items-center justify-center mt-5">
           <button
             type="submit"
-            className={`md:w-50 rounded-full bg-foreground px-3 py-2 text-white text-sm md:text-base hover:bg-slate-900 w-full ${
+            className={`w-full rounded-full bg-foreground px-3 py-2 text-white text-sm md:text-base hover:bg-slate-900 ${
               loadingSubmit ? "opacity-60 cursor-not-allowed" : ""
             }`}
             disabled={loadingSubmit || !timeSlot}
           >
-            {loadingSubmit
-              ? "Processing..."
-              : isSelectedSlotPaid
-              ? "Pay & Book"
-              : "Book a trial"}
+            {loadingSubmit ? "Processing..." : "Pay & Book"}
           </button>
         </div>
       </div>
