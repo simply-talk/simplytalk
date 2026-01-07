@@ -7,6 +7,7 @@ import { FaqSection } from "./components/Faq";
 import { CtaForm } from "./components/CTAForm";
 import { AboutUs } from "./components/AboutUs";
 import WhoShouldOpt from "./components/WhoShouldOptUs";
+import { Suspense } from "react";
 
 
 export default function Home() {
@@ -23,7 +24,9 @@ export default function Home() {
         <TestimonialsSection />
         <PricingSection />
         <FaqSection />
-        <CtaForm />
+        <Suspense>
+          <CtaForm />
+        </Suspense>
       </main>
   </div >
   );
