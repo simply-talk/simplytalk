@@ -1,42 +1,44 @@
 "use client";
-import Image from "next/image"
-
+import Image from "next/image";
 import { AnimatedHeading, StaggerContainer, StaggerItem } from "./animations";
+import { Heart, Brain, Home, Sparkles } from "lucide-react";
 
-export default function Component() {
+export default function WhoShouldOpt() {
   const categories = [
     {
-      icon: "/anxious-mind.png",
-      title: "Anxious Minds",
-      description: "When your thoughts won't slow down.",
+      icon: <Heart className="w-6 h-6 text-[#8bdbcb]" />,
+      title: "Emotionally Drained Women",
+      description:
+        "Feeling mentally overwhelmed, emotionally exhausted, or unsettled at home.",
     },
     {
-      icon: "/isolated.png",
-      title: "The Isolated Ones",
-      description: "You feel alone, even with people around.",
+      icon: <Brain className="w-6 h-6 text-[#8bdbcb]" />,
+      title: "Restless or Overthinking Minds",
+      description:
+        "Experiencing restlessness or lack of clarity despite everything seeming fine.",
     },
     {
-      icon: "/life-transition.png",
-      title: "In Life-Transition",
-      description: "Life is changing and it's overwhelming.",
+      icon: <Home className="w-6 h-6 text-[#8bdbcb]" />,
+      title: "Calm Guidance Seekers",
+      description:
+        "Want emotional support along with simple, practical Vastu-based home guidance.",
     },
     {
-      icon: "/first-timers.png",
-      title: "First Timers",
-      description: "You've never tried support, but you feel.",
+      icon: <Sparkles className="w-6 h-6 text-[#8bdbcb]" />,
+      title: "Non-Therapy Relief Seekers",
+      description:
+        "Looking for perspective and relief without therapy, medication, or heavy remedies.",
     },
-    {
-      icon: "/quiet-ones.png",
-      title: "The Quiet Ones",
-      description: "Held back by fear of judgment.",
-    },
-  ]
+  ];
 
   return (
     <section className="w-full py-8 md:py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <AnimatedHeading as="h2" className="judson md:mb-12 mb-8 text-center text-3xl md:text-4xl font-bold text-[var(--foreground)]">
+        <AnimatedHeading
+          as="h2"
+          className="judson md:mb-12 mb-8 text-center text-3xl md:text-4xl font-bold text-[var(--foreground)]"
+        >
           Who Should Opt SimplyTalk?
         </AnimatedHeading>
 
@@ -46,7 +48,7 @@ export default function Component() {
           <div className="md:w-1/2 flex items-center justify-center">
             <Image
               src="/who-illustration.png"
-              alt="Person in contemplative pose"
+              alt="Calm person in contemplative pose"
               width={612}
               height={474}
               className="w-full h-auto rounded-2xl"
@@ -58,18 +60,19 @@ export default function Component() {
           <StaggerContainer className="md:w-1/2 flex flex-col justify-between space-y-4">
             {categories.map((category, index) => (
               <StaggerItem key={index} className="flex items-center gap-3">
-                {/* Icon */}
-                <Image
-                  src={category.icon || "/placeholder.svg"}
-                  alt={category.title}
-                  width={54}
-                  height={54}
-                />
+                {/* Icon Box */}
+                <div className="flex items-center justify-center w-[68px] h-[54px] rounded-md bg-[#1B2629]">
+                  {category.icon}
+                </div>
 
-                {/* Content */}
+                {/* Text Content */}
                 <div>
-                  <h3 className="md:text-xl text-xl font-medium">{category.title}</h3>
-                  <p className="md:text-[16px] text-sm">{category.description}</p>
+                  <h3 className="md:text-xl text-xl font-medium text-[var(--foreground)]">
+                    {category.title}
+                  </h3>
+                  <p className="md:text-[16px] text-sm text-gray-700">
+                    {category.description}
+                  </p>
                 </div>
               </StaggerItem>
             ))}
@@ -77,5 +80,5 @@ export default function Component() {
         </div>
       </div>
     </section>
-  )
+  );
 }
